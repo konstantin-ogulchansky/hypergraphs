@@ -61,13 +61,13 @@ impl Hypergraph {
         where F: Fn(u64) -> usize, R: Rng + ?Sized
     {
         if pv < 0.0 || pe < 0.0 || pd < 0.0 {
-            return Err("Expected `pv`, `pe` and `pd` to be positive.");
+            return Err("Expected `pv`, `pe` and `pd` to be positive");
         }
         if f64::abs(pv + pe + pd - 1.0) >= f64::EPSILON {
-            return Err("Expected `pv + pe + pd != 1` to hold.");
+            return Err("Expected `pv`, `pe` and `pd` to sum up to 1");
         }
         if pv <= pd {
-            return Err("Expected `pv > pd` to hold.");
+            return Err("Expected `pv > pd` to hold");
         }
 
         let mut hypergraph = Box::new(Hypergraph::initial());
@@ -80,7 +80,7 @@ impl Hypergraph {
 
         for i in 1..t {
             if active_degree_total == 0 {
-                return Err("All vertices have been deactivated.");
+                return Err("All vertices have been deactivated");
             }
 
             hypergraph.theta.push(
