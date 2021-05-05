@@ -25,6 +25,8 @@ fn main() {
         (@arg t:  +takes_value default_value("100000") "Number of iterations to perform")
         (@arg save: --save +takes_value default_value("hypergraph.json")
             "Path to a JSON file to save the generated hypergraph to")
+        (@arg retry: --retry
+            "Whether to retry until the model finishes with success")
     ).get_matches();
 
     let pv = matches.value_of_t_or_exit::<f64>("pv");
@@ -33,11 +35,18 @@ fn main() {
     let m  = matches.value_of_t_or_exit::<u64>("m") as usize;
     let t  = matches.value_of_t_or_exit::<u64>("t");
     let save = matches.value_of_os("save").expect("`save` must be a valid path to a file");
+    let retry = matches.is_present("retry");
 
     // Generate a hypergraph.
-    let mut random = Pcg64Mcg::from_entropy();
     let instant    = Instant::now();
-    let generated  = Hypergraph::generate(pv, pe, pd, |_| m, t, &mut random).unwrap();
+    let mut random = Pcg64Mcg::from_entropy();
+    let mut result = Hypergraph::generate(pv, pe, pd, |_| m, t, &mut random);
+
+    while retry && result.is_err() {
+        result = Hypergraph::generate(pv, pe, pd, |_| m, t, &mut random);
+    }
+
+    let generated = result.unwrap();
 
     println!("Elapsed: {}ms.", instant.elapsed().as_millis());
 

@@ -57,7 +57,7 @@ impl Hypergraph {
     /// A `Result` instance that contains either a boxed generated hypergraph or an error message.
     pub fn generate<F, R>(
         pv: f64, pe: f64, pd: f64, y: F, t: u64, random: &mut R
-    ) -> Result<Box<Self>, &str>
+    ) -> Result<Box<Self>, &'static str>
         where F: Fn(u64) -> usize, R: Rng + ?Sized
     {
         if pv < 0.0 || pe < 0.0 || pd < 0.0 {
