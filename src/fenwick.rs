@@ -9,32 +9,11 @@ pub struct Fenwick {
 
 impl Fenwick {
     /// Constructs an empty Fenwick tree of the specified size.
-    pub fn from_zeroes(size: usize) -> Self {
+    pub fn of_size(size: usize) -> Self {
         Self {
             accum: vec![0; size],
             total: 0
         }
-    }
-
-    /// Constructs a Fenwick tree from a vector in `O(n)`.
-    pub fn from_vec(items: &Vec<i32>) -> Self {
-        let size = items.len();
-        let mut fenwick = Self {
-            accum: items.clone(),
-            total: 0
-        };
-
-        for i in 0..size {
-            let j = i | (i + 1);
-
-            if j < size {
-                fenwick.accum[j] += fenwick.accum[i];
-            }
-
-            fenwick.total += items[i];
-        }
-
-        fenwick
     }
 
     /// Computes a partial sum in the interval [i, j) in `O(log n)`.

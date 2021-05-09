@@ -71,7 +71,7 @@ impl Hypergraph {
         }
 
         let mut hypergraph = Box::new(Hypergraph::initial());
-        let mut fenwick = Fenwick::from_zeroes(t as usize);
+        let mut fenwick = Fenwick::of_size(t as usize);
 
         fenwick.add(0, 1);
 
