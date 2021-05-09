@@ -33,7 +33,7 @@ fn main() {
         format!("Couldn't generate a hypergraph after {} retries", opt.retries).as_str()
     );
 
-    println!("Elapsed: {}ms", instant.elapsed().as_millis());
+    println!("Elapsed: {:?}", instant.elapsed());
 
     // Save the generated hypergraph into a file.
     let json = json!({

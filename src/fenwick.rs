@@ -3,7 +3,7 @@ use rand::Rng;
 
 #[derive(Debug)]
 pub struct Fenwick {
-    accum: Vec<i32>,
+    items: Vec<i32>,
     total: i32,
 }
 
@@ -11,7 +11,7 @@ impl Fenwick {
     /// Constructs an empty Fenwick tree of the specified size.
     pub fn of_size(size: usize) -> Self {
         Self {
-            accum: vec![0; size],
+            items: vec![0; size],
             total: 0
         }
     }
@@ -21,11 +21,11 @@ impl Fenwick {
         let mut sum = 0;
 
         while j > i {
-            sum += self.accum[j - 1];
+            sum += self.items[j - 1];
             j &= j - 1;
         }
         while i > j {
-            sum -= self.accum[i - 1];
+            sum -= self.items[i - 1];
             i &= i - 1;
         }
 
@@ -44,10 +44,10 @@ impl Fenwick {
 
     /// Adds `x` to the value by index `i`.
     pub fn add(self: &mut Self, mut i: usize, x: i32) {
-        let n = self.accum.len();
+        let n = self.items.len();
 
         while i < n {
-            self.accum[i] += x;
+            self.items[i] += x;
             i |= i + 1;
         }
 
@@ -67,7 +67,7 @@ impl Fenwick {
 
         let mut a = 0;
         let mut i = 0;
-        let mut j = self.accum.len() - 1;
+        let mut j = self.items.len() - 1;
 
         while i < j {
             let m = (i + j) / 2;
