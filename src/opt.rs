@@ -30,7 +30,11 @@ pub struct Opt {
     #[clap(long, default_value = "5")]
     pub runs: u32,
 
+    /// Whether runs should be parallelized.
+    #[clap(long)]
+    pub par: bool,
+
     /// Number of retries to perform until the model finishes with success
-    #[clap(long, default_value = "1000")]
+    #[clap(long, default_value = "100")]
     pub retries: u32,
 }

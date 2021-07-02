@@ -18,9 +18,15 @@ fn main() {
     let opt = Opt::parse();
     let instant = Instant::now();
 
-    (0..opt.runs)
-        .into_par_iter()
-        .for_each(|i| save(i, generate(i, &opt), &opt));
+    if opt.par {
+        (0..opt.runs)
+            .into_par_iter()
+            .for_each(|i| save(i, generate(i, &opt), &opt));
+    }
+    else {
+        (0..opt.runs)
+            .for_each(|i| save(i, generate(i, &opt), &opt));
+    }
 
     println!("Total: {:?} elapsed", instant.elapsed());
 }
