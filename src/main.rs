@@ -1,26 +1,37 @@
 mod fenwick;
 mod hypergraph;
-mod cli;
+mod opt;
 
 use crate::hypergraph::Hypergraph;
-use crate::cli::Opt;
+use crate::opt::Opt;
 
 use std::fs::File;
 use std::io::Write;
 use std::time::Instant;
 use rand::SeedableRng;
 use rand_pcg::Pcg64Mcg;
-use serde_json::{json, to_string};
 use clap::Clap;
+use rayon::prelude::*;
+use serde_json::{json, to_string};
 
 fn main() {
     let opt = Opt::parse();
+    let instant = Instant::now();
 
-    // Generate a hypergraph.
-    let instant    = Instant::now();
+    (0..opt.runs)
+        .into_par_iter()
+        .for_each(|i| save(i, generate(i, &opt), &opt));
+
+    println!("Total: {:?} elapsed", instant.elapsed());
+}
+
+// Generates a hypergraph with the specified parameters of the model.
+fn generate(i: u32, opt: &Opt) -> Box<Hypergraph> {
+    let instant = Instant::now();
     let mut random = Pcg64Mcg::from_entropy();
     let mut result = Hypergraph::generate(opt.pv, opt.pe, opt.pd, |_| opt.m, opt.t, &mut random);
 
+    // Regenerate a hypergraph until success.
     for _ in 1..=opt.retries {
         if result.is_ok() {
             break;
@@ -30,12 +41,16 @@ fn main() {
     }
 
     let generated = result.expect(
-        format!("Couldn't generate a hypergraph after {} retries", opt.retries).as_str()
+        format!("[{}]: Couldn't generate a hypergraph after {} retries", i, opt.retries).as_str()
     );
 
-    println!("Elapsed: {:?}", instant.elapsed());
+    println!("[{}]: {:?} elapsed", i, instant.elapsed());
 
-    // Save the generated hypergraph into a file.
+    generated
+}
+
+// Saves the generated hypergraph to a file.
+fn save(i: u32, generated: Box<Hypergraph>, opt: &Opt) {
     let json = json!({
         "parameters": {
             "pv": opt.pv,
@@ -50,7 +65,8 @@ fn main() {
         "theta":  generated.theta,
     });
     let data = to_string(&json).expect("Couldn't convert to JSON");
+    let path = format!("{}-{}.json", opt.save, i);
 
-    File::create(opt.save).expect("Couldn't create a file")
+    File::create(&path).expect("Couldn't create a file")
         .write_all(data.as_bytes()).expect("Couldn't write to the file");
 }
