@@ -1,35 +1,16 @@
-mod fenwick;
-mod hypergraph;
-mod opt;
+mod core;
 
-use crate::hypergraph::Hypergraph;
-use crate::opt::Opt;
+use crate::core::{
+    hypergraph::Hypergraph,
+    opt::Opt
+};
 
-use std::fs::File;
-use std::io::Write;
-use std::time::Instant;
+use std::{fs::File, io::Write, time::Instant};
 use rand::SeedableRng;
 use rand_pcg::Pcg64Mcg;
 use clap::Clap;
 use rayon::prelude::*;
 use serde_json::{json, to_string};
-
-fn main() {
-    let opt = Opt::parse();
-    let instant = Instant::now();
-
-    if opt.par {
-        (0..opt.runs)
-            .into_par_iter()
-            .for_each(|i| save(i, generate(i, &opt), &opt));
-    }
-    else {
-        (0..opt.runs)
-            .for_each(|i| save(i, generate(i, &opt), &opt));
-    }
-
-    println!("Total: {:?} elapsed", instant.elapsed());
-}
 
 // Generates a hypergraph with the specified parameters of the model.
 fn generate(i: u32, opt: &Opt) -> Box<Hypergraph> {
@@ -75,4 +56,21 @@ fn save(i: u32, generated: Box<Hypergraph>, opt: &Opt) {
 
     File::create(&path).expect("Couldn't create a file")
         .write_all(data.as_bytes()).expect("Couldn't write to the file");
+}
+
+fn main() {
+    let opt = Opt::parse();
+    let instant = Instant::now();
+
+    if opt.par {
+        (0..opt.runs)
+            .into_par_iter()
+            .for_each(|i| save(i, generate(i, &opt), &opt));
+    }
+    else {
+        (0..opt.runs)
+            .for_each(|i| save(i, generate(i, &opt), &opt));
+    }
+
+    println!("Total: {:?} elapsed", instant.elapsed());
 }

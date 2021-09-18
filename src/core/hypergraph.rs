@@ -1,4 +1,4 @@
-use crate::fenwick::Fenwick;
+use crate::core::fenwick::Fenwick;
 
 use rand::Rng;
 
