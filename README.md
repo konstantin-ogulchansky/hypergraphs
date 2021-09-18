@@ -135,3 +135,7 @@ Fields in this format represent the following:
     _Social Networks_, 
     29(1):70–80, 2007.
     [doi:10.1016/j.socnet.2005.12.003](https://doi.org/10.1016/j.socnet.2005.12.003).
+
+## License
+
+This package is licensed under the [MIT](LICENSE) license.
