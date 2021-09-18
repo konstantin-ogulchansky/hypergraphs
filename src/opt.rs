@@ -26,11 +26,11 @@ pub struct Opt {
     #[clap(long, default_value = "data/hypergraph")]
     pub save: String,
 
-    /// Number of hypergraphs to generate.
+    /// Number of hypergraphs to generate
     #[clap(long, default_value = "5")]
     pub runs: u32,
 
-    /// Whether runs should be parallelized.
+    /// Whether runs should be parallelized
     #[clap(long)]
     pub par: bool,
 
