@@ -93,6 +93,34 @@ Also,
 - hypergraphs are saved to files of the format `data/hypergraph-{i}.json`, where `i` corresponds to the index of the generated hypergraph;
 - hypergraphs are generated in parallel.
 
+### Format
+
+A generated hypergraph is saved to a file in the JSON format:
+
+```json
+{
+  "parameters": {
+    "pv": 0.30,
+    "pe": 0.49,
+    "pd": 0.21,
+    "m": 3,
+    "t": 1000
+  },
+  "nodes": 311,
+  "edges": [[0], [0, 0, 1], [0, 0, 2], ...],
+  "degree": [27, 2, 2, 6, 12, 6, ...],
+  "theta": [1.0, 2.5, 3.857142857142857, 6.6, ...]
+}
+```
+
+Fields in this format represent the following:
+* `parameters` contains parameters of the model that the hypergraph was generated with;
+* `nodes` is the number of nodes in the hypergraph;
+* `edges` is a list of hyperedges (each hyperedge may contain the same vertex several times);
+* `degree` is a list of degrees of vertices;
+* `theta` is a list of the expected degrees of deactivated vertices:
+  - `theta[t] = sum of squares of active degrees / sum of active degrees` at step `t`.
+
 ## References
 
 [1] Chen Avin, Zvi Lotker, Yinon Nahum, and David Peleg. 
