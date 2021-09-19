@@ -8,9 +8,8 @@ An implementation of the _random preferential attachment hypergraph model with v
 
 The main idea of this model is to generate random hypergraphs whose degree distribution follows a power-law distribution with an exponential cutoff:
 
-```
-P(k) ~ C k^{-a} / b^k
-```
+<pre><code>P(k) ~ C k<sup>-a</sup> b<sup>-k</sup></code></pre>
+
 where `C`, `a` and `b` are some constant parameters of the distribution.
 
 Such hypergraphs can be used to model real-world collaboration networks, where vertices correspond to authors and hyperedges correspond to publications.
@@ -20,26 +19,28 @@ Basically, the model is a combination of the Avin et al. model [1], which genera
 
 ### Description
 
-The model can be described as a 5-tuple `H(H_0, pv, pe, pd, Y)`, where
-- `H_0` is the initial hypergraph (we assume that it consist of a single vertex with degree 1);
-- `pv` is the probability of the vertex arrival event;
-- `pe` is the probability of the edge arrival event;
-- `pd` is the probability of the vertex deactivation event;
-- `Y = (Y_1, Y_2, ...)` is a sequence of random variables, which represent sizes of added hyperedges.
+The model can be described as a 5-tuple <code>H(H<sub>0</sub>, p<sub>v</sub>, p<sub>e</sub>, p<sub>d</sub>, Y)</code>, where
+- <code>H<sub>0</sub></code> is the initial hypergraph (we assume that it consist of a single vertex with degree 1);
+- <code>p<sub>v</sub></code> is the probability of the vertex arrival event;
+- <code>p<sub>e</sub></code> is the probability of the edge arrival event;
+- <code>p<sub>d</sub></code> is the probability of the vertex deactivation event;
+- <code>Y = (Y<sub>1</sub>, Y<sub>2</sub>, ...)</code> is a sequence of random variables, which represent sizes of added hyperedges.
 
 The model is then defined as follows:
-* **Step `t = 0`**. Initialize the model with `H_0`.
-* **Step `t > 0`**. Construct a hypergraph `H_t` from `H_{t-1}` as follows:
+* **Step `t = 0`**. Initialize the model with <code>H<sub>0</sub></code>.
+* **Step `t > 0`**. Construct a hypergraph <code>H<sub>t</sub></code> from <code>H<sub>t-1</sub></code> as follows:
 
-  - with probability `pv`, add a vertex and a preferentially selected hyperedge of size `Y_t` between active vertices of `H_{t-1}`,
-  - with probability `pe`, add a preferentially selected hyperedge of size `Y_t` between active vertices of `H_{t-1}`,
-  - with probability `pd`, deactivate a preferentially selected active vertex of `H_{t-1}`;
+  - with probability <code>p<sub>v</sub></code>, 
+    add a vertex and a preferentially selected hyperedge of size <code>Y<sub>t</sub></code> between active vertices of <code>H<sub>t-1</sub></code>,
+  - with probability <code>p<sub>e</sub></code>, 
+    add a preferentially selected hyperedge of size <code>Y<sub>t</sub></code> between active vertices of <code>H<sub>t-1</sub></code>,
+  - with probability <code>p<sub>d</sub></code>, 
+    deactivate a preferentially selected active vertex of <code>H<sub>t-1</sub></code>;
 
 Preferential selection means that the probability of selecting a vertex `v` from a set `A` is proportional to its degree. 
 That is, 
-```
-P[v is chosen] = deg v / sum [deg u, u in A]
-```
+
+<pre><code>P[v is chosen] = deg v / sum <sub>u in A</sub> deg u</code></pre>
 
 ## Usage
 
