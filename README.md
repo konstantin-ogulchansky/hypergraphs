@@ -49,7 +49,7 @@ The program can be used by simply running
 cargo run --release
 ```
 
-Additional parameters of the models can be specified after `--`.
+Additional parameters of the model can be specified after `--`.
 Running
 
 ```bash
