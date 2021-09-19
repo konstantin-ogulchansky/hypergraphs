@@ -6,11 +6,11 @@ An implementation of the _random preferential attachment hypergraph model with v
 
 ### Motivation
 
-The main idea of this model is to generate random hypergraphs whose degree distribution follows a power-law distribution with an exponential cutoff:
+The main idea of this model is to generate random hypergraphs whose degree distribution follows a [power-law distribution with an exponential cutoff](https://en.wikipedia.org/wiki/Power_law#Power_law_with_exponential_cutoff):
 
-<pre><code>P(k) ~ C k<sup>-a</sup> b<sup>-k</sup></code></pre>
+<pre><code>P(k) ~ C k<sup>-α</sup> γ<sup>k</sup></code></pre>
 
-where `C`, `a` and `b` are some constant parameters of the distribution.
+where `C`, `α` and `γ` are some constant parameters of the distribution.
 
 Such hypergraphs can be used to model real-world collaboration networks, where vertices correspond to authors and hyperedges correspond to publications.
 It has been observed that collaboration networks expose the presence of the exponential cutoff in their degree distribution.
