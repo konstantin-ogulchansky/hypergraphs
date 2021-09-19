@@ -61,10 +61,9 @@ impl Fenwick {
 
     /// A weighted sampling of a single element.
     ///
-    /// The algorithm implies a binary search of the least index `i`, such that the partial sum
+    /// The algorithm uses a binary search of the smallest index `i`, such that the partial sum 
     /// in the interval [0, i] is greater than a generated uniform random value. Assuming that a
-    /// uniform random value can be generated in `O(1)`, the complexity of the algorithm is
-    /// `O(log^2 n)`.
+    /// uniform random value can be generated in `O(1)`, the complexity of the algorithm is `O(log^2 n)`.
     pub fn sample_one<R>(self: &Self, random: &mut R) -> u32
         where R: Rng + ?Sized
     {
