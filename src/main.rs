@@ -46,10 +46,10 @@ fn save(i: u32, generated: Box<Hypergraph>, opt: &Opt) {
             "m":  opt.m,
             "t":  opt.t,
         },
-        "nodes":  generated.nodes,
-        "edges":  generated.edges,
-        "degree": generated.degree,
-        "theta":  generated.theta,
+        "vertices": generated.vertices,
+        "edges":    generated.edges,
+        "degree":   generated.degree,
+        "theta":    generated.theta,
     });
     let data = to_string(&json).expect("Couldn't convert to JSON");
     let path = format!("{}-{}.json", opt.save, i);

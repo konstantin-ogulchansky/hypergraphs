@@ -60,19 +60,23 @@ cargo run --release -- --help
 yields
 
 ```
+hypergraphs
+Generates a hypergraph according to the random preferential attachment hypergraph model with vertex
+deactivation
+
 USAGE:
     hypergraphs.exe [FLAGS] [OPTIONS] [ARGS]
 
 ARGS:
-    <pv>    Probability of the `vertex-arrival` event [default: 0.30]
-    <pe>    Probability of the `edge-arrival` event [default: 0.49]
-    <pd>    Probability of the `vertex-deactivation` event [default: 0.21]
-    <m>     Distribution of cardinalities of hyperedges [default: 3]
+    <pv>    Probability of the vertex arrival event [default: 0.30]
+    <pe>    Probability of the edge arrival event [default: 0.49]
+    <pd>    Probability of the vertex deactivation event [default: 0.21]
+    <m>     Size of hyperedges [default: 3]
     <t>     Number of iterations to perform [default: 1000]
 
 FLAGS:
     -h, --help       Prints help information
-        --par        Whether runs should be parallelized
+        --par        Whether hypergraphs should be generated in parallel
     -V, --version    Prints version information
 
 OPTIONS:
@@ -107,7 +111,7 @@ A generated hypergraph is saved to a file in the JSON format:
     "m": 3,
     "t": 1000
   },
-  "nodes": 311,
+  "vertices": 311,
   "edges": [[0], [0, 0, 1], [0, 0, 2], ...],
   "degree": [27, 2, 2, 6, 12, 6, ...],
   "theta": [1.0, 2.5, 3.857142857142857, 6.6, ...]
@@ -116,7 +120,7 @@ A generated hypergraph is saved to a file in the JSON format:
 
 Fields in this format represent the following:
 * `parameters` contains parameters of the model that the hypergraph was generated with;
-* `nodes` is the number of nodes in the hypergraph;
+* `vertices` is the number of vertices in the hypergraph;
 * `edges` is a list of hyperedges (each hyperedge may contain the same vertex several times);
 * `degree` is a list of degrees of vertices;
 * `theta` is a list of the expected degrees of deactivated vertices:

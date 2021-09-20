@@ -3,8 +3,8 @@ use crate::core::fenwick::Fenwick;
 use rand::Rng;
 
 pub struct Hypergraph {
-    /// The number of nodes in the hypergraph.
-    pub nodes:  u32,
+    /// The number of vertices in the hypergraph.
+    pub vertices:  u32,
     /// A vector of hyperedges in the hypergraph.
     /// Each hyperedge is represented as a vector of vertices;
     /// hence, a single hyperedge may contain the same vertex several times.
@@ -32,7 +32,7 @@ impl Hypergraph {
         fenwick.add(0, 1);
 
         Self {
-            nodes:  1,
+            vertices: 1,
             edges:  vec![vec![0]],
             degree: vec![1],
             theta:  vec![1.0],
@@ -129,9 +129,9 @@ impl Hypergraph {
     /// # Returns
     /// The index of the added vertex.
     fn add_vertex(self: &mut Self) -> u32 {
-        let v = self.nodes;
+        let v = self.vertices;
 
-        self.nodes += 1;
+        self.vertices += 1;
         self.degree.push(0);
 
         v
