@@ -1,4 +1,8 @@
-use crate::core::hypergraph::Hypergraph;
+use crate::core::{
+    hypergraph::Hypergraph,
+    model::Model,
+    simulation::Simulation
+};
 
 use std::{fs::File, io::Write, time::Instant};
 
@@ -6,7 +10,7 @@ use clap::Clap;
 use rand::SeedableRng;
 use rand_pcg::Pcg64Mcg;
 use rayon::prelude::*;
-use serde_json::{json, to_string};
+use serde_json;
 
 /// Generates a hypergraph according to the specified model
 #[derive(Clap, Debug)]
@@ -47,70 +51,37 @@ pub struct Gen {
 }
 
 impl Gen {
-    // Executes the `gen` subcommand.
+    /// Executes the `gen` subcommand.
     pub fn execute(self: &Self) {
         let instant = Instant::now();
 
         if self.par {
             (0..self.runs)
                 .into_par_iter()
-                .for_each(|i| self.generate(i));
+                .for_each(|i| self.generate(i).unwrap());
         }
         else {
             (0..self.runs)
-                .for_each(|i| self.generate(i));
+                .for_each(|i| self.generate(i).unwrap());
         }
 
         println!("Total: {:?} elapsed", instant.elapsed());
     }
 
-    // Generates a hypergraph.
-    fn generate(self: &Self, i: u32) {
+    /// Generates a hypergraph.
+    fn generate(self: &Self, i: u32) -> Result<(), &'static str> {
+        let model = Model::new(self.pv, self.pe, self.pd, self.m)?;
         let instant = Instant::now();
-        let mut random = Pcg64Mcg::from_entropy();
-        let mut result = Hypergraph::generate(
-            self.pv, self.pe, self.pd, |_| self.m, self.t, &mut random
-        );
-
-        // Regenerate a hypergraph until success.
-        for _ in 0..self.retries {
-            if result.is_ok() {
-                break;
-            }
-
-            result = Hypergraph::generate(
-                self.pv, self.pe, self.pd, |_| self.m, self.t, &mut random
-            );
-        }
-
-        let generated = result.expect(
-            format!("[{}]: Failed after {} retries", i, self.retries).as_str()
-        );
+        let simulation = model.generate(self.t, self.retries)?;
 
         println!("[{}]: {:?} elapsed", i, instant.elapsed());
 
-        self.save(i, generated);
-    }
-
-    // Saves the generated hypergraph to a file.
-    fn save(self: &Self, i: u32, generated: Box<Hypergraph>) {
-        let json = json!({
-            "parameters": {
-                "pv": self.pv,
-                "pe": self.pe,
-                "pd": self.pd,
-                "m":  self.m,
-                "t":  self.t,
-            },
-            "vertices": generated.vertices,
-            "edges":    generated.edges,
-            "degree":   generated.degree,
-            "theta":    generated.theta,
-        });
-        let data = to_string(&json).expect("Couldn't convert to JSON");
+        let data = serde_json::to_string(&simulation).unwrap();
         let path = format!("{}-{}.json", self.save, i);
-        let mut file = File::create(&path).expect("Couldn't create a file");
+        let mut file = File::create(&path).unwrap();
 
-        file.write_all(data.as_bytes()).expect("Couldn't write to the file");
+        file.write_all(data.as_bytes()).unwrap();
+
+        Ok(())
     }
 }

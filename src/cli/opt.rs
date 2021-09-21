@@ -14,5 +14,5 @@ pub struct Opt {
 #[derive(Clap, Debug)]
 pub enum Subcommand {
     Gen(Gen),   // Generates a hypergraph.
-    Plot(Plot), // Plots a hypergraph.
+    Plot(Plot), // Plots the degree distribution of a hypergraph.
 }
