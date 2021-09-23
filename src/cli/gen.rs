@@ -1,14 +1,8 @@
-use crate::core::{
-    hypergraph::Hypergraph,
-    model::Model,
-    simulation::Simulation
-};
+use crate::core::model::Model;
 
 use std::{fs::File, io::Write, time::Instant, error::Error};
 
 use clap::Clap;
-use rand::SeedableRng;
-use rand_pcg::Pcg64Mcg;
 use rayon::prelude::*;
 use serde_json;
 

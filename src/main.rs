@@ -1,11 +1,7 @@
 mod cli;
 mod core;
 
-use crate::cli::{
-    opt::{Opt, Subcommand},
-    gen::Gen,
-    plot::Plot,
-};
+use crate::cli::opt::{Opt, Subcommand};
 
 use clap::Clap;
 

@@ -1,13 +1,8 @@
-use crate::core::{
-    hypergraph::Hypergraph,
-    simulation::Simulation
-};
+use crate::core::simulation::Simulation;
 
-
-use std::{fs, cmp::Ordering, ops::Range, error::Error};
+use std::{fs, cmp::Ordering, error::Error};
 
 use clap::Clap;
-use itertools;
 use plotters::prelude::*;
 use serde_json;
 

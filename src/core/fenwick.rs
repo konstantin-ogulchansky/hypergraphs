@@ -16,11 +16,6 @@ impl Fenwick {
         }
     }
 
-    /// Returns the total sum of `items`.
-    pub const fn total(self: &Self) -> i32 {
-        self.total
-    }
-
     /// Computes a partial sum in the interval [i, j) in `O(log n)`.
     pub fn sum(self: &Self, mut i: usize, mut j: usize) -> i32 {
         let mut sum = 0;

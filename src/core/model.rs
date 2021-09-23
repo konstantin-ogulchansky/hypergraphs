@@ -1,12 +1,8 @@
-use crate::core::{
-    hypergraph::Hypergraph,
-    fenwick::Fenwick,
-    simulation::Simulation
-};
+use crate::core::simulation::Simulation;
 
 use std::error::Error;
 
-use rand::{Rng, SeedableRng};
+use rand::{SeedableRng};
 use rand_pcg::Pcg64Mcg;
 use serde::{Serialize, Deserialize};
 
@@ -61,7 +57,7 @@ impl Model {
     }
 
     /// The size of a hyperedge at step `t`.
-    pub fn size(self: &Self, t: u64) -> usize {
+    pub fn size(self: &Self, _t: u64) -> usize {
         self.m
     }
 
@@ -93,20 +89,20 @@ impl Model {
     }
 
     /// Computes the theoretical degree distribution.
-    pub fn degree_distribution(self: &Self) -> Box<dyn Fn(f64) -> f64> {
+    pub fn _degree_distribution(self: &Self) -> Box<dyn Fn(f64) -> f64> {
         let pv = self.pv;
         let pe = self.pe;
         let pd = self.pd;
         let m = self.m as f64;
 
         let g = (pv * (m - 1.) + pe * m) / (pv * (m - 1.) + pe * m + pd);
-        let o = self.theta(0., 100000);
+        let o = self._theta(0., 100000);
         let d = pd / ((pv + pe) * m - pd * o);
         let b = (m * (pv + pe) - pd * o) / (pv * (m - 1.) + pe * m + pd);
-        let c = pv / g * gamma(1. + 1./b) / b;
+        let c = pv / g * _gamma(1. + 1./b) / b;
 
         // The gamma function.
-        fn gamma(x: f64) -> f64 {
+        fn _gamma(_x: f64) -> f64 {
             panic!("Not implemented.");
         }
 
@@ -114,7 +110,7 @@ impl Model {
     }
 
     /// Computes `theta` using the fixed-point iteration method.
-    fn theta(self: &Self, seed: f64, n: u32) -> f64 {
+    fn _theta(self: &Self, _seed: f64, _n: u32) -> f64 {
         // May require the `rgsl` package and GNU Scientific Library.
         // Unfortunately, it appears that there are no alternative libraries,
         // which implement the hypergeometric function.
