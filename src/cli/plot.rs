@@ -3,9 +3,8 @@ use crate::core::{
     simulation::Simulation
 };
 
-use std::fs;
-use std::cmp::Ordering;
-use std::ops::Range;
+
+use std::{fs, cmp::Ordering, ops::Range, error::Error};
 
 use clap::Clap;
 use itertools;
@@ -25,22 +24,24 @@ pub struct Plot {
 
 impl Plot {
     /// Executes the `plot` subcommand.
-    pub fn execute(self: &Self) {
-        let file = fs::read_to_string(self.path.as_str()).unwrap();
-        let simulation: Simulation = serde_json::from_str(file.as_str()).unwrap();
+    pub fn execute(self: &Self) -> Result<(), Box<dyn Error>> {
+        let file = fs::read_to_string(self.path.as_str())?;
+        let simulation: Simulation = serde_json::from_str(file.as_str())?;
 
-        self.plot(&simulation);
+        self.plot(&simulation)?;
+
+        Ok(())
     }
 
     /// Plots the degree distribution of the generated hypergraph.
-    fn plot(self: &Self, simulation: &Simulation) -> Result<(), Box<dyn std::error::Error>> {
+    fn plot(self: &Self, simulation: &Simulation) -> Result<(), Box<dyn Error>> {
         // Compute the empirical degree distribution to display.
         let distribution = simulation.hypergraph.degree_distribution();
 
-        let x = *distribution.keys().min().unwrap() as f32..
-                *distribution.keys().max().unwrap() as f32;
-        let y = *distribution.values().min_by(cmp).unwrap()..
-                *distribution.values().max_by(cmp).unwrap();
+        let x = *distribution.keys().min().ok_or("Couldn't find min `x`")? as f32..
+                *distribution.keys().max().ok_or("Couldn't find max `x`")? as f32;
+        let y = *distribution.values().min_by(cmp).ok_or("Couldn't find min `y`")?..
+                *distribution.values().max_by(cmp).ok_or("Couldn't find max `y`")?;
 
         fn cmp(a: &&f32, b: &&f32) -> Ordering {
             a.partial_cmp(b).unwrap_or(Ordering::Equal)

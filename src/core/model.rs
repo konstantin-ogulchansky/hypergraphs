@@ -4,6 +4,8 @@ use crate::core::{
     simulation::Simulation
 };
 
+use std::error::Error;
+
 use rand::{Rng, SeedableRng};
 use rand_pcg::Pcg64Mcg;
 use serde::{Serialize, Deserialize};
@@ -41,18 +43,18 @@ pub struct Model {
 impl Model {
     /// Creates a model with the specified parameters.
     /// Ensures that the provided parameters are correct.
-    pub fn new(pv: f64, pe: f64, pd: f64, m: usize) -> Result<Model, &'static str> {
+    pub fn new(pv: f64, pe: f64, pd: f64, m: usize) -> Result<Model, Box<dyn Error>> {
         if pv < 0.0 || pe < 0.0 || pd < 0.0 {
-            return Err("Expected `pv`, `pe` and `pd` to be positive");
+            return Err("Expected `pv`, `pe` and `pd` to be positive".into());
         }
         if f64::abs(pv + pe + pd - 1.0) >= f64::EPSILON {
-            return Err("Expected `pv`, `pe` and `pd` to sum up to 1");
+            return Err("Expected `pv`, `pe` and `pd` to sum up to 1".into());
         }
         if pv <= pd {
-            return Err("Expected `pv > pd` to hold");
+            return Err("Expected `pv > pd` to hold".into());
         }
         if m < 1 {
-            return Err("Expected `m` to be a positive integer")
+            return Err("Expected `m` to be a positive integer".into());
         }
 
         Ok(Model { pv, pd, pe, m })
@@ -73,7 +75,7 @@ impl Model {
     ///
     /// # Returns
     /// A `Result` instance that contains either a simulation result or an error message.
-    pub fn generate(self: &Self, steps: u64, retries: u32) -> Result<Simulation, &'static str> {
+    pub fn generate(self: &Self, steps: u64, retries: u32) -> Result<Simulation, Box<dyn Error>> {
         let mut random = Pcg64Mcg::from_entropy();
         let mut result = Simulation::run(self, steps, &mut random);
 

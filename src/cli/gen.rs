@@ -4,7 +4,7 @@ use crate::core::{
     simulation::Simulation
 };
 
-use std::{fs::File, io::Write, time::Instant};
+use std::{fs::File, io::Write, time::Instant, error::Error};
 
 use clap::Clap;
 use rand::SeedableRng;
@@ -52,7 +52,7 @@ pub struct Gen {
 
 impl Gen {
     /// Executes the `gen` subcommand.
-    pub fn execute(self: &Self) {
+    pub fn execute(self: &Self) -> Result<(), Box<dyn Error>> {
         let instant = Instant::now();
 
         if self.par {
@@ -66,21 +66,23 @@ impl Gen {
         }
 
         println!("Total: {:?} elapsed", instant.elapsed());
+
+        Ok(())
     }
 
     /// Generates a hypergraph.
-    fn generate(self: &Self, i: u32) -> Result<(), &'static str> {
+    fn generate(self: &Self, i: u32) -> Result<(), Box<dyn Error>> {
         let model = Model::new(self.pv, self.pe, self.pd, self.m)?;
         let instant = Instant::now();
         let simulation = model.generate(self.t, self.retries)?;
 
         println!("[{}]: {:?} elapsed", i, instant.elapsed());
 
-        let data = serde_json::to_string(&simulation).unwrap();
+        let data = serde_json::to_string(&simulation)?;
         let path = format!("{}-{}.json", self.save, i);
-        let mut file = File::create(&path).unwrap();
+        let mut file = File::create(&path)?;
 
-        file.write_all(data.as_bytes()).unwrap();
+        file.write_all(data.as_bytes())?;
 
         Ok(())
     }

@@ -15,5 +15,5 @@ fn main() {
     match opt.command {
         Subcommand::Gen(x)  => x.execute(),
         Subcommand::Plot(x) => x.execute(),
-    }
+    }.unwrap();
 }

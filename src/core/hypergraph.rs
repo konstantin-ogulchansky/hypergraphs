@@ -1,8 +1,9 @@
 use crate::core::fenwick::Fenwick;
 
+use std::collections::HashMap;
+
 use rand::Rng;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize)]
 pub struct Hypergraph {

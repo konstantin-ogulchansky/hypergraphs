@@ -4,6 +4,8 @@ use crate::core::{
     model::Model
 };
 
+use std::error::Error;
+
 use rand::Rng;
 use serde::{Serialize, Deserialize};
 
@@ -35,7 +37,7 @@ impl Simulation {
     /// A `Simulation` object, which describes the result of the simulation.
     pub fn run<R>(
         model: &Model, steps: u64, random: &mut R
-    ) -> Result<Simulation, &'static str>
+    ) -> Result<Simulation, Box<dyn Error>>
         where R: Rng + ?Sized
     {
         let mut hypergraph = Hypergraph::initial();
@@ -59,7 +61,7 @@ impl Simulation {
         // Perform the specified number of steps of the simulation.
         for t in 1..=steps {
             if active_degrees == 0 {
-                return Err("All vertices have been deactivated");
+                return Err("All vertices have been deactivated".into());
             }
 
             let p = random.gen::<f64>();
