@@ -65,32 +65,26 @@ Generates a hypergraph according to the random preferential attachment hypergrap
 deactivation
 
 USAGE:
-    hypergraphs.exe [FLAGS] [OPTIONS] [ARGS]
-
-ARGS:
-    <pv>    Probability of the vertex arrival event [default: 0.30]
-    <pe>    Probability of the edge arrival event [default: 0.49]
-    <pd>    Probability of the vertex deactivation event [default: 0.21]
-    <m>     Size of hyperedges [default: 3]
-    <t>     Number of iterations to perform [default: 1000]
+    hypergraphs.exe <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
-        --par        Whether hypergraphs should be generated in parallel
     -V, --version    Prints version information
 
-OPTIONS:
-        --retries <retries>    Number of retries to perform until the model finishes with success
-                               [default: 100]
-        --runs <runs>          Number of hypergraphs to generate [default: 5]
-        --save <save>          Template path to a JSON file to save the generated hypergraph to
-                               [default: data/hypergraph]
+SUBCOMMANDS:
+    gen     Generates a hypergraph according to the specified model
+    help    Prints this message or the help of the given subcommand(s)
+    plot    Plots the degree distribution of the specified hypergraph
 ```
 
-### Example
+### `gen` Command
+
+Generates hypergraphs according to the model.
+
+#### Example
 
 ```bash
-cargo run --release -- 0.3 0.49 0.21 3 1000 --save="data/hypergraph" --runs=100 --par
+cargo run --release -- gen 0.3 0.49 0.21 3 1000 --save="data/hypergraph" --runs=100 --par
 ```
 
 This command generates 100 hypergraphs according to the model with parameters `pv = 0.3`, `pe = 0.49`, `pd = 0.21` and `Y = 3` after `t = 1000` steps.
@@ -98,7 +92,7 @@ Also,
 - hypergraphs are saved to files of the format `data/hypergraph-{i}.json`, where `i` corresponds to the index of the generated hypergraph;
 - hypergraphs are generated in parallel.
 
-### Format
+#### Format
 
 A generated hypergraph is saved to a file in the JSON format:
 
@@ -125,6 +119,19 @@ Fields in this format represent the following:
 * `degree` is a list of degrees of vertices;
 * `theta` is a list of the expected degrees of deactivated vertices:
   - `theta[t] = sum of squares of active degrees / sum of active degrees` at step `t`.
+
+### `plot` Command
+
+Plots the degree distribution of a generated hypergraph.
+
+#### Example
+
+```bash
+cargo run --release -- plot "data/hypergraph-0.json" --save="hypergraph-0.png"
+```
+
+This command reads a generated hypergraph from the file `"data/hypergraph-0.json"` and plots its degree distribution.
+It then saves this plot to a file named `"hypergraph-0.png"`.
 
 ## References
 
